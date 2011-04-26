@@ -1,10 +1,10 @@
 include ../Makefile.in
 
-common.a: string.o
-	ar ru $@ string.o
+common.a: string.o error.o
+	ar ru $@ $^
 
 string.o: string.c string.h
-	$(CC) $(DEBUG) $(CFLAGS) -c -o $@ string.c
+error.o: error.c meta.h
 
 clean:
 	-rm *.o

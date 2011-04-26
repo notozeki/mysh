@@ -21,3 +21,4 @@ void get_line(String* str)
 		string_append(str, buf);
 	} while ( strchr(buf, '\n') == NULL );
 }
+

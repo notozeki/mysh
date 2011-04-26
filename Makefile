@@ -1,23 +1,22 @@
 include Makefile.in
-INCLUDES=analyzer/lex.h analyzer/token.h common/string.h io/io.h
-ARCHIVES=analyzer/analyzer.a common/common.a io/io.a
+MODULE_DIRS = analyzer io system common
+MODULE_FILES = $(foreach M,$(MODULE_DIRS),$(M)/$(M).a)
+INCLUDES = analyzer/lex.h analyzer/token.h common/string.h io/io.h system/signal.h
+PROGRAM = mysh
 
-mysh: mysh.c $(ARCHIVES) $(INCLUDES)
-	$(CC) $(DEBUG) $(CFLAGS) -o $@ mysh.c $(ARCHIVES)
+all: $(notdir $(MODULE_FILES)) $(PROGRAM)
 
-analyzer/analyzer.a:
-	cd analyzer; make
+$(PROGRAM): mysh.c $(MODULE_FILES) $(INCLUDES)
+	$(CC) $(DEBUG) $(CFLAGS) -o $@ mysh.c $(MODULE_FILES)
 
-common/common.a:
-	cd common; make
+$(notdir $(MODULE_FILES)):
+	$(MAKE) -C $(basename $@)
 
-io/io.a:
-	cd io; make
-
+.PHONY: clean
 clean:
-	cd analyzer; make clean
-	cd common; make clean
-	cd io; make clean
+	@for subdir in $(MODULE_DIRS) ; do \
+		(cd $$subdir && $(MAKE) clean); \
+	done
 	-rm mysh
 	-rm *.o
 	-rm *~

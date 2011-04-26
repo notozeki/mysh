@@ -1,3 +1,6 @@
 CC=gcc
 CFLAGS=-Wall
-DEBUG=-g
+DEBUG=-g -DDEBUG
+
+%.o: %.c
+	$(CC) $(DEBUG) $(CFLAGS) -c -o $@ $<

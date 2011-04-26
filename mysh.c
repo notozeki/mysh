@@ -3,6 +3,7 @@
 #include "io/io.h"
 #include "analyzer/token.h"
 #include "analyzer/lex.h"
+#include "system/signal.h"
 
 extern char ***environ;
 
@@ -12,6 +13,7 @@ int main(int argc, char* argv[])
 	Token* t;
 
 	// init signal handler
+	init_signal_handler();
 
 	while ( 1 ) { // main loop
 		print_prompt();
