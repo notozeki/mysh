@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <errno.h>
+#include <sys/wait.h>
 #include "../common/error.h"
 
 void invoke_process(const char* path, char* const argv[], int wait)
@@ -12,8 +13,8 @@ void invoke_process(const char* path, char* const argv[], int wait)
 		if ( wait ) waitpid(child_pid, NULL, 0);
 	}
 	else if ( child_pid == 0 ) { // 子
-		if ( execv(path, argv) < 0) { // パス名展開は勝手にやってほしい
-			print_last_error("execv");
+		if ( execvp(path, argv) < 0) { // パス名展開は勝手にやってほしい
+			print_last_error("execvp");
 		}
 	}
 	else { // エラー

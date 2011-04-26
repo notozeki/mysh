@@ -4,13 +4,13 @@
 #include "analyzer/token.h"
 #include "analyzer/lex.h"
 #include "system/signal.h"
-
-extern char ***environ;
+#include "system/process.h"
 
 int main(int argc, char* argv[])
 {
 	String* buf = new_string("");
 	Token* t;
+	char* args[2];
 
 	// init signal handler
 	init_signal_handler();
@@ -31,7 +31,12 @@ int main(int argc, char* argv[])
 				delete_token(t);
 				goto loop_end;
 			}
-			print_token(t);
+			else if ( t->id == T_STRING ) {
+				args[0] = t->value.string;
+				args[1] = NULL;
+				invoke_process(t->value.string, args, 1);
+			}
+			//print_token(t);
 			delete_token(t);
 		}
 	}
