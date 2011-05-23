@@ -13,7 +13,7 @@ typedef enum {
 	T_OR,		// ||
 	T_CONTINUE,	// &
 	T_AND,		// &&
-	T_DST,		// &n
+	T_REF,		// &n
 	T_LPAREN,	// (
 	T_RPAREN,	// )
 	T_ESCAPE,	// ＼

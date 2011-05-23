@@ -1,13 +1,13 @@
 include ../Makefile.in
 
-analyzer.a: lex.o token.o
-	ar ru $@ lex.o token.o
+analyzer.a: analyzer.o token.o node.o lexer.o parser.o
+	ar ru $@ $^
 
-lex.o: lex.c token.h ../common/string.h
-	$(CC) $(DEBUG) $(CFLAGS) -c -o $@ lex.c
-
+analyzer.o: analyzer.c node.h lexer.h parser.h
 token.o: token.c token.h
-	$(CC) $(DEBUG) $(CFLAGS) -c -o $@ token.c
+node.o: node.c node.h ../common/error.h
+lexer.o: lexer.c token.h ../common/string.h ../common/error.h
+parser.o: parser.c lexer.h token.h node.h
 
 clean:
 	-rm *.o

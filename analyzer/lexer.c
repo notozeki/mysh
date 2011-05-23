@@ -3,6 +3,7 @@
 #include <string.h>
 #include "token.h"
 #include "../common/string.h"
+#include "../common/error.h"
 
 typedef enum {
 	LS_INITIAL,
@@ -60,7 +61,7 @@ int get_keyword_id(String* str)
 }
 
 
-void lex_set_line(String* line)
+void lexer_init(String* line)
 {
 	st_line = string_c_str(line);
 	st_size = string_size(line);
@@ -171,6 +172,7 @@ Token* lex_get_token()
 
 		default:
 			// bug!
+			die_of_bug("bad status");
 			break;
 		}
 	}
@@ -194,6 +196,7 @@ typedef enum {
 	LS_SP_OTHER,
 } LexSpState;
 
+/* ==== special sign analyze ==== */
 static char* st_sp_string;
 static int st_sp_index;
 static int st_sp_size;
@@ -238,8 +241,8 @@ Token* lex_get_special_token()
 				st_sp_index++;
 				st_sp_state = LS_SP_VERTICAL;
 			}
-			else if ( c == '\0') {
-				delete_token(token);
+			else if ( c == '\0') { // 解析終了のお知らせ
+				delete_token(token); // 準備したけどいらなかった
 				return NULL;
 			}
 			else {
@@ -281,7 +284,7 @@ Token* lex_get_special_token()
 			}
 			else {
 				token->id = T_OUTRED;
-				token->value.number = 0; // デフォルトでのリダイレクト先は0
+				token->value.number = 1; // デフォルトでのリダイレクト元は0
 			}
 			st_sp_state = LS_SP_INITIAL;
 			goto end;
@@ -311,7 +314,7 @@ Token* lex_get_special_token()
 					st_sp_index++;
 					c = st_sp_string[st_sp_index];
 				} while ( isdigit(c) );
-				token->id = T_DST;
+				token->id = T_REF;
 				token->value.number = atoi(string_c_str(numbuf));
 			}
 			else {
@@ -345,6 +348,7 @@ Token* lex_get_special_token()
 			}
 			else {
 				// bug!
+				die_of_bug("unexpected charactor");
 			}
 			st_sp_index++;
 			st_sp_state = LS_SP_INITIAL;
@@ -353,6 +357,7 @@ Token* lex_get_special_token()
 
 		default:
 			// bug!
+			die_of_bug("bad status");
 			break;
 		}
 	}

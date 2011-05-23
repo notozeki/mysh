@@ -3,6 +3,8 @@
 
 #include "../common/string.h"
 
+void print_welcome();
+void print_goodbye();
 void print_prompt();
 void get_line(String* str);
 

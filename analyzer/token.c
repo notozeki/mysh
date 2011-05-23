@@ -62,7 +62,7 @@ void print_token(Token* tk)
 		printf("Type: and (&&)\n");
 		break;
 
-	case T_DST:
+	case T_REF:
 		printf("Type: destination (&)\n");
 		printf("Value: %d\n", tk->value.number);
 		break;

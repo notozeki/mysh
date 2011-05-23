@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "error.h"
 #include "meta.h"
 
 void print_last_error(const char* place)
@@ -17,12 +16,18 @@ void print_last_error(const char* place)
 
 void _cannot_continue(const char* place, const char* reason)
 {
-	fprintf(stderr, "ABORT!: %s: %s\n", place, reason);
+	fprintf(stderr, "ABORT!: at %s: %s() failed\n", place, reason);
+	perror(reason);
 	exit(1);
 }
 
-void _die_of_bug(const char* place, const char* reason)
+void _die_of_bug(const char* file, int line, const char* reason)
 {
-	fprintf(stderr, "BUG!: %s: %s\n", place, reason);
+#ifdef DEBUG
+	fprintf(stderr, "BUG!: [%s:%d] %s\n", file, line, reason);
+#else
+	// logファイルにエラーを書き出すとかするとそれっぽい
+	fprintf(stderr, "Congratulations! You found %s's bug. Please report me.\n", PROGRAM_NAME);
+#endif
 	exit(1);
 }

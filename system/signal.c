@@ -6,6 +6,7 @@
 
 struct {int signum; void (*handler)(int);} handler_table[] = {
 	{SIGINT, sigint_handler},
+	{SIGQUIT, sigquit_handler},
 };
 
 void regist_signal_handler(int signum, void (*handler)(int));
