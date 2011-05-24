@@ -10,5 +10,6 @@ void pop_job(pid_t pid);
 pid_t primary_job_pid();
 void primary_job_suspend();
 pid_t primary_suspended_job_pid();
+void primary_suspended_job_continue();
 
 #endif // JOBS_H

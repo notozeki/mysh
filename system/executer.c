@@ -126,7 +126,11 @@ int execute_command(Node* command_node, Redv* global_redv)
 	pid_t child;
 	child = fork();
 	if ( child ) { // parent
+		push_job(child, command_node->token->value.string);
 		waitpid(child, &status, WUNTRACED);
+		if ( !WIFSTOPPED(status) ) { // 停止しただけではない（終了した）とき
+			pop_job(child);
+		}
 		ret = ( WIFEXITED(status) )? WEXITSTATUS(status) : -1;
 	}
 	else if ( child == 0 ) { // child

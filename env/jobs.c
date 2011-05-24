@@ -174,6 +174,7 @@ void primary_job_suspend()
 		}
 	}
 	if ( min != st_job_stack[0] ) {
+		printf("%d suspend!\n", min->pid);
 		min->state = JS_SUSPENDED;
 	}
 }
@@ -189,4 +190,19 @@ pid_t primary_suspended_job_pid()
 		}
 	}
 	return min->pid;
+}
+
+void primary_suspended_job_continue()
+{
+	int i;
+	Job* min = st_job_stack[0];
+	for ( i = 1; i < st_sp; i++ ) {
+		if ( st_job_stack[i]->state == JS_SUSPENDED &&
+		     st_job_stack[i]->priority < min->priority ) {
+			min = st_job_stack[i];
+		}
+	}
+	if ( min != st_job_stack[0] ) {
+		min->state = JS_RUNNING;
+	}
 }

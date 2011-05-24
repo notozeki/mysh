@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <limits.h>
 #include <string.h>
 #include "io.h"
 #include "../common/string.h"
@@ -29,7 +31,9 @@ void print_goodbye()
 
 void print_prompt()
 {
-	fprintf(stderr, "[%s]%s@%s $ ",PROGRAM_NAME, st_username, st_hostname);
+	char buf[PATH_MAX];
+	if ( getcwd(buf, PATH_MAX) == NULL ) buf[0] = '\0';
+	fprintf(stderr, "[%s]%s@%s %s $ ",PROGRAM_NAME, st_username, st_hostname, buf);
 }
 
 void get_line(String* str)

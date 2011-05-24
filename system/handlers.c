@@ -34,7 +34,7 @@ void sigtstp_handler(int signum)
 
 	if ( pid == getpid() ) return; // プライマリジョブが自分自身なら何もしない
 	kill((pid_t)pid, SIGTSTP);
-	waitpid(pid, NULL, WUNTRACED);
+	//waitpid(pid, NULL, WUNTRACED);
 
 	primary_job_suspend();
 }
