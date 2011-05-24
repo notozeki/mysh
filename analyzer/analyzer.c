@@ -49,6 +49,7 @@ Node* analyze_line(String* str)
 	case PS_ERROR:
 		parser_print_error();
 		if ( node != NULL ) {
+			delete_tree(node);
 			node = NULL;
 		}
 		break;

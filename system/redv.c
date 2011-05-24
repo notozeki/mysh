@@ -51,6 +51,7 @@ void delete_redv(Redv* redv)
 {
         int i;
 
+	if ( redv == NULL ) return;
         for ( i = 0; i < redv->ep; i++ ) {
                 free(redv->entries[i]);
         }

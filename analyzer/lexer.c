@@ -98,13 +98,14 @@ Token* lex_get_token()
 
 		case LS_STRING:
 			if ( isspace(st_line[st_index]) || isspecial(st_line[st_index]) ) {
+				/*
 				if ( get_keyword_id(buf) >= 0 ) { // keywordかどうかの判定
 					token->id = (TokenId)get_keyword_id(buf);
 				}
-				else {
+				else {*/
 					token->id = T_STRING;
 					token->value.string = strdup(string_c_str(buf));
-				}
+				//}
 				st_state = LS_INITIAL;
 				goto end;
 			}
@@ -252,6 +253,13 @@ Token* lex_get_special_token()
 
 		case LS_SP_NUMBER:
 			if ( c == '>' ) {
+				if ( st_sp_string[st_sp_index + 1] == '>' ) { // APPENDの特別な処理
+					token->id = T_APPEND;
+					token->value.number = atoi(string_c_str(numbuf));
+					st_sp_index += 2;
+					st_sp_state = LS_SP_INITIAL;
+					goto end;
+				}
 				token->id = T_OUTRED;
 				token->value.number = atoi(string_c_str(numbuf));
 				st_sp_index++;
@@ -280,11 +288,12 @@ Token* lex_get_special_token()
 		case LS_SP_GT:
 			if ( c == '>' ) {
 				token->id = T_APPEND;
+				token->value.number = 1; // デフォルトでのリダイレクト元は1
 				st_sp_index++;
 			}
 			else {
 				token->id = T_OUTRED;
-				token->value.number = 1; // デフォルトでのリダイレクト元は0
+				token->value.number = 1; // デフォルトでのリダイレクト元は1
 			}
 			st_sp_state = LS_SP_INITIAL;
 			goto end;

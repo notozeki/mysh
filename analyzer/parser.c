@@ -61,7 +61,7 @@ void parse_error(const char* message)
 */
 Node* parse_args()
 {
-	printf("parsing <args> ...\n");
+	//printf("parsing <args> ...\n");
 	Token* arg;
 	Node* args;
 	Node* ret;
@@ -91,7 +91,7 @@ Node* parse_args()
 */
 Node* parse_solo_command()
 {
-	printf("parsing <solo_command> ...\n");
+	//printf("parsing <solo_command> ...\n");
 	Token* file;
 	Node* args;
 	Node* ret;
@@ -121,7 +121,7 @@ Node* parse_solo_command()
 */
 Node* parse_complex_command()
 {
-	printf("parsing <complex_command> ...\n");
+	//printf("parsing <complex_command> ...\n");
 	Token* lparen;
 	Node* list;
 	Token* rparen;
@@ -153,7 +153,7 @@ Node* parse_complex_command()
 */
 Node* parse_redsign()
 {
-	printf("parsing <redsign> ...\n");
+	//printf("parsing <redsign> ...\n");
 	Token* in_out;
 	Node* ret;
 
@@ -173,7 +173,7 @@ Node* parse_redsign()
 */
 Node* parse_src_dst()
 {
-	printf("parsing <src_dst> ...\n");
+	//printf("parsing <src_dst> ...\n");
 	Token* file_ref;
 	Node* ret;
 	
@@ -195,7 +195,7 @@ Node* parse_src_dst()
 */
 Node* parse_append_hear()
 {
-	printf("parsing <append_hear> ...\n");
+	//printf("parsing <append_hear> ...\n");
 	Token* sign;
 	Token* file_eot;
 	Node* ret;
@@ -207,9 +207,10 @@ Node* parse_append_hear()
 	}
 
 	file_eot = get_token();
-	if ( file_eot != T_STRING ) {
+	if ( file_eot->id != T_STRING ) {
 		unget_token(file_eot);
-		parse_error("Missing file name or EOT");
+		if ( sign->id == T_APPEND ) parse_error("Missing file name");
+		if ( sign->id == T_HEAR ) parse_error("Missing end of token");
 		return NOMATCH;
 	}
 
@@ -227,7 +228,7 @@ Node* parse_append_hear()
 */
 Node* parse_redirect()
 {
-	printf("parsing <redirect> ...\n");
+	//printf("parsing <redirect> ...\n");
 	Node* redsign;
 	Node* src_dst;
 	Node* append_hear;
@@ -273,7 +274,7 @@ Node* parse_redirect()
 */
 Node* parse_command()
 {
-	printf("parsing <command> ...\n");
+	//printf("parsing <command> ...\n");
 	Node* solo_command;
 	Node* complex_command;
 	Node* redirect;
@@ -300,38 +301,38 @@ Node* parse_command()
 }
 
 /*
-  pipeline ::= <command1>
-             | <command1> | <command2>
+  pipeline ::= <command>
+             | <command> | <pipeline>
  */
 Node* parse_pipeline()
 {
-	printf("parsing <pipeline> ...\n");
-	Node* command1;
+	//printf("parsing <pipeline> ...\n");
+	Node* command;
 	Token* pipe;
-	Node* command2;
+	Node* pipeline;
 	Node* ret;
 
-	command1 = parse_command();
-	if ( !ISMATCH(command1) ) {
+	command = parse_command();
+	if ( !ISMATCH(command) ) {
 		return NOMATCH;
 	}
 
 	pipe = get_token();
 	if ( pipe->id != T_PIPE ) {
 		unget_token(pipe);
-		return command1;
+		return command;
 	}
 
-	command2 = parse_command();
-	if ( !ISMATCH(command2) ) {
+	pipeline = parse_pipeline();
+	if ( !ISMATCH(pipeline) ) {
 		parse_error("Missing right side of |");
 		return NOMATCH;
 	}
 
 	ret = new_node();
 	ret->token = pipe;
-	ret->left = command1;
-	ret->right = command2;
+	ret->left = command;
+	ret->right = pipeline;
 
 	return ret;
 }
@@ -345,7 +346,7 @@ Node* parse_pipeline()
 */
 Node* parse_list()
 {
-	printf("parsing <list> ...\n");
+	//printf("parsing <list> ...\n");
 	Node* pipeline1;
 	Token* op;
 	Node* pipeline2;
@@ -395,7 +396,7 @@ Node* parse_list()
 */
 Node* parse_acceptable()
 {
-	printf("parsing <acceptable> ...\n");
+	//printf("parsing <acceptable> ...\n");
 	Node* list;
 	Token* eol;
 

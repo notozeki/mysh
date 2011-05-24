@@ -7,19 +7,8 @@
 struct {int signum; void (*handler)(int);} handler_table[] = {
 	{SIGINT, sigint_handler},
 	{SIGQUIT, sigquit_handler},
+	{SIGTSTP, sigtstp_handler},
 };
-
-void regist_signal_handler(int signum, void (*handler)(int));
-
-void init_signal_handler()
-{
-	int n = sizeof(handler_table) / sizeof (handler_table[0]);
-	int i;
-
-	for ( i = 0; i < n; i++ ) {
-		regist_signal_handler(handler_table[i].signum, handler_table[i].handler);
-	}
-}
 
 void regist_signal_handler(int signum, void (*handler)(int))
 {
@@ -31,5 +20,15 @@ void regist_signal_handler(int signum, void (*handler)(int))
 
 	if ( sigaction(signum, &sa, NULL) < 0 ) {
 		cannot_continue("failed sigaction()");
+	}
+}
+
+void init_signal_handler()
+{
+	int n = sizeof(handler_table) / sizeof (handler_table[0]);
+	int i;
+
+	for ( i = 0; i < n; i++ ) {
+		regist_signal_handler(handler_table[i].signum, handler_table[i].handler);
 	}
 }

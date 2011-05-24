@@ -1,5 +1,5 @@
 include Makefile.in
-MODULE_DIRS = analyzer io system common
+MODULE_DIRS = analyzer io system common env embed
 MODULE_FILES = $(foreach M,$(MODULE_DIRS),$(M)/$(M).a)
 INCLUDES = analyzer/analyzer.h common/string.h io/io.h system/signal.h
 PROGRAM = ezsh
@@ -17,6 +17,6 @@ clean:
 	@for subdir in $(MODULE_DIRS) ; do \
 		(cd $$subdir && $(MAKE) clean); \
 	done
-	-rm mysh
+	-rm ezsh
 	-rm *.o
 	-rm *~

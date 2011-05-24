@@ -3,5 +3,6 @@
 
 void sigint_handler(int signum);
 void sigquit_handler(int signum);
+void sigtstp_handler(int signum);
 
 #endif // HANDLER_H
