@@ -392,13 +392,23 @@ Node* parse_list()
 }
 
 /* 
-   acceptable ::= <list> eot
+   acceptable ::= <list> eol
+               | eol
 */
 Node* parse_acceptable()
 {
 	//printf("parsing <acceptable> ...\n");
 	Node* list;
 	Token* eol;
+
+	eol = get_token();
+	if ( eol->id == T_EOL  ) { // 改行だけ（空行）
+		Node* ret;
+		ret = new_node();
+		ret->token = eol;
+		return ret;
+	}
+	unget_token(eol);
 
 	list = parse_list();
 	if ( !ISMATCH(list) ) {
@@ -410,6 +420,7 @@ Node* parse_acceptable()
 		unget_token(eol);
 		return NOMATCH;
 	}
+	delete_token(eol);
 
 	return list;
 }

@@ -25,7 +25,12 @@ Redv* construct_redv(Node* command_node, Redv* global_redv)
 		int fd;
 		switch ( p->token->id ) {
 		case T_OUTRED:
-			fd = open(p->left->token->value.string, O_WRONLY|O_CREAT, 0664);
+			if ( p->left->token->id == T_STRING ) {
+				fd = open(p->left->token->value.string, O_WRONLY|O_CREAT, 0664);
+			}
+			else { // T_DST
+				fd = p->left->token->value.number;
+			}
 			if ( fd < 0 ) {
 				print_last_error("open");
 				break;
@@ -33,7 +38,12 @@ Redv* construct_redv(Node* command_node, Redv* global_redv)
 			redv_append_entry(redv, p->token->value.number, fd);
 			break;
 		case T_INRED:
-			fd = open(p->left->token->value.string, O_RDONLY);
+			if ( p->left->token->id == T_STRING ) {
+				fd = open(p->left->token->value.string, O_RDONLY);
+			}
+			else { // T_DST
+				fd = p->left->token->value.number;
+			}
 			if ( fd < 0 ) {
 				print_last_error("open");
 				break;
@@ -41,7 +51,13 @@ Redv* construct_redv(Node* command_node, Redv* global_redv)
 			redv_append_entry(redv, p->token->value.number, fd);
 			break;
 		case T_APPEND:
-			fd = open(p->left->token->value.string, O_WRONLY|O_CREAT|O_APPEND, 0664);
+			if ( p->left->token->id == T_STRING ) {
+				fd = open(p->left->token->value.string, 
+					  O_WRONLY|O_CREAT|O_APPEND, 0664);
+			}
+			else { // T_DST
+				fd = p->left->token->value.number;
+			}
 			if ( fd < 0 ) {
 				print_last_error("open");
 				break;

@@ -2,6 +2,6 @@
 #define META_H
 
 #define PROGRAM_NAME "ezsh"
-#define VERSION "0.0.1"
+#define VERSION "0.1.0"
 
 #endif // META_H

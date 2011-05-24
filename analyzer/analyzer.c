@@ -1,6 +1,4 @@
-/*
-  analyzer.c -- lexer と parser の糊付け
-*/
+#include <stdio.h>
 #include <stdlib.h>
 #include "node.h"
 #include "lexer.h"
@@ -45,6 +43,9 @@ Node* analyze_line(String* str)
 	node = parse_acceptable();
 	switch ( parser_state() ) {
 	case PS_ACCEPT:
+		if ( node == NULL ) {
+			fprintf(stderr, "parse error\n");
+		}
 		break;
 	case PS_ERROR:
 		parser_print_error();

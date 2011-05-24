@@ -6,6 +6,7 @@ common.a: string.o error.o
 string.o: string.c string.h
 error.o: error.c meta.h
 
+.PHONY: clean
 clean:
 	-rm *.o
 	-rm *.a

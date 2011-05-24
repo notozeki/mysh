@@ -2,9 +2,8 @@
 #include "common/string.h"
 #include "io/io.h"
 #include "analyzer/analyzer.h"
-#include "system/signal.h"
-#include "system/process.h"
 #include "analyzer/node.h"
+#include "system/signal.h"
 #include "system/executer.h"
 #include "env/jobs.h"
 #include "env/flags.h"
@@ -13,7 +12,6 @@ int main(int argc, char* argv[])
 {
 	String* buf = new_string("");
 
-	// init signal handler
 	init_signal_handler();
 	init_jobs();
 
@@ -23,12 +21,12 @@ int main(int argc, char* argv[])
 		get_line(buf);
 		Node* node = analyze_line(buf);
 		if ( node ) {
+			if ( node->token->id == T_EOL ) {
+				delete_tree(node);
+				continue;
+			}
 			execute(node, NULL);
-			//printf("accept!\n");
 			delete_tree(node);
-		}
-		else {
-			printf("deny...\n");
 		}
 	}
 	print_goodbye();

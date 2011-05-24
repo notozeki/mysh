@@ -1,7 +1,8 @@
 include Makefile.in
 MODULE_DIRS = analyzer io system common env embed
 MODULE_FILES = $(foreach M,$(MODULE_DIRS),$(M)/$(M).a)
-INCLUDES = analyzer/analyzer.h common/string.h io/io.h system/signal.h
+INCLUDES = common/string.h io/io.h analyzer/analyzer.h analyzer/node.h system/signal.h \
+	   system/executer.h env/jobs.h env/flags.h
 PROGRAM = ezsh
 
 all: $(notdir $(MODULE_FILES)) $(PROGRAM)
