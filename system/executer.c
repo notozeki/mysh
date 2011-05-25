@@ -22,14 +22,19 @@ Redv* construct_redv(Node* command_node, Redv* global_redv)
 	redv = ( global_redv != NULL )? redv_copy(global_redv) : new_redv();
 	p = command_node;
 	while ( (p = p->center) ) {
-		int fd;
+		int fd = -1;
 		switch ( p->token->id ) {
 		case T_OUTRED:
 			if ( p->left->token->id == T_STRING ) {
 				fd = open(p->left->token->value.string, O_WRONLY|O_CREAT, 0664);
 			}
 			else { // T_DST
-				fd = p->left->token->value.number;
+				int i;
+				for ( i = 0; i < redv->ep; i++ ) {
+					if ( redv->entries[i][0] == p->left->token->value.number ) {
+						fd = redv->entries[i][1];
+					}
+				}
 			}
 			if ( fd < 0 ) {
 				print_last_error("open");
@@ -42,7 +47,12 @@ Redv* construct_redv(Node* command_node, Redv* global_redv)
 				fd = open(p->left->token->value.string, O_RDONLY);
 			}
 			else { // T_DST
-				fd = p->left->token->value.number;
+				int i;
+				for ( i = 0; i < redv->ep; i++ ) {
+					if ( redv->entries[i][0] == p->left->token->value.number ) {
+						fd = redv->entries[i][1];
+					}
+				}
 			}
 			if ( fd < 0 ) {
 				print_last_error("open");
@@ -56,7 +66,12 @@ Redv* construct_redv(Node* command_node, Redv* global_redv)
 					  O_WRONLY|O_CREAT|O_APPEND, 0664);
 			}
 			else { // T_DST
-				fd = p->left->token->value.number;
+				int i;
+				for ( i = 0; i < redv->ep; i++ ) {
+					if ( redv->entries[i][0] == p->left->token->value.number ) {
+						fd = redv->entries[i][1];
+					}
+				}
 			}
 			if ( fd < 0 ) {
 				print_last_error("open");
